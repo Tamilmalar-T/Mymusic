@@ -1,0 +1,73 @@
+:root {
+  --bg-base: #121212;
+  --bg-highlight: #1a1a1a;
+  --bg-card: #282828;
+  --bg-card-hover: #3e3e3e;
+  --text-base: #ffffff;
+  --text-subdued: #b3b3b3;
+  --accent: #1db954;
+  --player-bg: #404040;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background-color: var(--bg-base) !important;
+  color: var(--text-base) !important;
+  overflow-x: hidden;
+  padding-bottom: 140px;
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-base) !important;
+  font-weight: 700;
+}
+
+a {
+  color: var(--text-base);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--text-base);
+}
+
+/* Hide scrollbar for horizontal scrolling lists */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Filter Pills */
+.filter-pill {
+  background-color: var(--bg-card);
+  color: var(--text-base);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  border: none;
+  margin-right: 8px;
+}
+.filter-pill.active {
+  background-color: var(--accent);
+  color: black;
+  font-weight: 600;
+}
+
+/* Header Avatar */
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ff6b6b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: black;
+  font-size: 14px;
+}
