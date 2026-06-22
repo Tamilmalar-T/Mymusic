@@ -27,14 +27,6 @@ function Home() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [userName, setUserName] = useState("User");
 
-  // Route guarding
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-    }
-  }, [navigate]);
-
   useEffect(() => {
     fetchSongs();
   }, []);
@@ -51,11 +43,6 @@ function Home() {
   const handleUploadSuccess = (newSong) => {
     fetchSongs();
     setCurrentSong(newSong);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
   };
 
   // Assign fallback stock covers if not set in DB
@@ -157,23 +144,6 @@ function Home() {
             <div className="avatar-circle">M</div>
             <span style={{ fontSize: "0.85rem", fontWeight: "700" }}>Premium User</span>
           </div>
-          <button
-            onClick={handleLogout}
-            style={{
-              background: "none",
-              border: "none",
-              color: "var(--text-subdued)",
-              cursor: "pointer",
-              padding: "4px",
-              display: "flex",
-              alignItems: "center"
-            }}
-            onMouseOver={(e) => e.currentTarget.style.color = "#ef4444"}
-            onMouseOut={(e) => e.currentTarget.style.color = "var(--text-subdued)"}
-            title="Log Out"
-          >
-            <FiLogOut size={18} />
-          </button>
         </div>
       </div>
 
@@ -207,9 +177,8 @@ function Home() {
           className="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3"
           style={{ position: "relative", zIndex: 10 }}
         >
-          {/* Filters (Mobile/Tablet View) */}
           <div className="d-flex align-items-center gap-2">
-            <div className="d-lg-none avatar-circle me-2" onClick={handleLogout} title="Tap to Log Out">M</div>
+            <div className="d-lg-none avatar-circle me-2">M</div>
             <div style={{ display: "flex", overflowX: "auto" }} className="hide-scrollbar">
               {filters.map(f => (
                 <button
