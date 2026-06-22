@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { FiX, FiUploadCloud, FiMusic, FiCheckCircle, FiAlertCircle, FiImage, FiSettings } from "react-icons/fi";
+import { API_BASE_URL } from "../config";
 
 function UploadModal({ isOpen, onClose, onUploadSuccess }) {
   const [title, setTitle] = useState("");
@@ -135,7 +136,7 @@ function UploadModal({ isOpen, onClose, onUploadSuccess }) {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/songs/upload", formData, {
+      const res = await axios.post(`${API_BASE_URL}/api/songs/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

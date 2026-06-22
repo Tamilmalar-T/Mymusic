@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FiPlay } from "react-icons/fi";
+import { API_BASE_URL } from "../config";
 
 function RecentCard({ image, title }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -25,7 +26,7 @@ function RecentCard({ image, title }) {
     >
       <div style={{ position: "relative", width: "64px", height: "64px", flexShrink: 0 }}>
         <img
-          src={image && image.startsWith("/uploads") ? `http://localhost:5000${image}` : (image || "/images/pop.png")}
+          src={image && image.startsWith("/uploads") ? `${API_BASE_URL}${image}` : (image || "/images/pop.png")}
           alt={title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />

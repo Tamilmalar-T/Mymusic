@@ -10,6 +10,7 @@ import {
   FiChevronsLeft,
   FiChevronsRight
 } from 'react-icons/fi';
+import { API_BASE_URL } from '../config';
 
 function MusicPlayer({ song }) {
   const audioRef = useRef(null);
@@ -106,7 +107,7 @@ function MusicPlayer({ song }) {
         <div className="player-track-info">
           <div style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0 }}>
             <img
-              src={song.imageUrl && song.imageUrl.startsWith("/uploads") ? `http://localhost:5000${song.imageUrl}` : (song.imageUrl || "/images/pop.png")}
+              src={song.imageUrl && song.imageUrl.startsWith("/uploads") ? `${API_BASE_URL}${song.imageUrl}` : (song.imageUrl || "/images/pop.png")}
               alt={song.title}
               className={`vinyl-spin ${isPlaying ? "" : "vinyl-paused"}`}
               style={{ 
@@ -267,7 +268,7 @@ function MusicPlayer({ song }) {
       {/* Hidden audio element */}
       <audio
         ref={audioRef}
-        src={`http://localhost:5000${song.fileUrl}`}
+        src={`${API_BASE_URL}${song.fileUrl}`}
         onEnded={() => {
           if (!isLooping) {
             setIsPlaying(false);

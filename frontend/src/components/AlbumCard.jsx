@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FiPlay } from "react-icons/fi";
+import { API_BASE_URL } from "../config";
 
 function AlbumCard({ image, title, subtitle }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -44,7 +45,7 @@ function AlbumCard({ image, title, subtitle }) {
         }}
       >
         <img
-          src={image && image.startsWith("/uploads") ? `http://localhost:5000${image}` : (image || "/images/pop.png")}
+          src={image && image.startsWith("/uploads") ? `${API_BASE_URL}${image}` : (image || "/images/pop.png")}
           alt={title}
           style={{
             width: "100%",
