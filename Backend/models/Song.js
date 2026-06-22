@@ -15,6 +15,10 @@ const songSchema = new mongoose.Schema(
     fileUrl: {
       type: String,
       required: true
+    },
+
+    imageUrl: {
+      type: String
     }
   },
   {
