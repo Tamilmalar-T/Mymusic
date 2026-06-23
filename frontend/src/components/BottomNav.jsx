@@ -1,4 +1,4 @@
-import { FiHome, FiSearch, FiLayers, FiAward, FiPlusCircle } from "react-icons/fi";
+import { FiHome, FiSearch, FiPlusCircle } from "react-icons/fi";
 
 function BottomNav({ onCreateClick }) {
   return (
@@ -23,8 +23,8 @@ function BottomNav({ onCreateClick }) {
     >
       <NavItem icon={<FiHome size={20} />} label="Home" active />
       <NavItem icon={<FiSearch size={20} />} label="Search" />
-      <NavItem icon={<FiLayers size={20} />} label="Library" />
-      <NavItem icon={<FiAward size={20} />} label="Premium" />
+    
+    
       <NavItem 
         icon={<FiPlusCircle size={20} />} 
         label="Upload" 
