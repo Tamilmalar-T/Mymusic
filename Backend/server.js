@@ -32,6 +32,10 @@ mongoose
     );
   });
 
+app.get("/", (req, res) => {
+  res.json({ message: "MyMusic Backend API is running successfully!" });
+});
+
 app.use("/api/auth", authRoutes);
 
 app.use("/api/songs", songRoutes);
