@@ -24,6 +24,38 @@ app.use(
   express.static("uploads")
 );
 
+// Fallback virtual file serving from MongoDB for Vercel/serverless environments
+const Song = require("./models/Song");
+
+app.get("/uploads/songs/:filename", async (req, res) => {
+  try {
+    const song = await Song.findOne({ fileUrl: "/uploads/songs/" + req.params.filename });
+    if (!song || !song.audioData) {
+      return res.status(404).send("Audio file not found in database.");
+    }
+    res.set("Content-Type", song.audioContentType || "audio/mpeg");
+    res.send(song.audioData);
+  } catch (error) {
+    console.error("Virtual audio service error:", error);
+    res.status(500).send("Internal server error.");
+  }
+});
+
+app.get("/uploads/images/:filename", async (req, res) => {
+  try {
+    const song = await Song.findOne({ imageUrl: "/uploads/images/" + req.params.filename });
+    if (!song || !song.imageData) {
+      return res.status(404).send("Image file not found in database.");
+    }
+    res.set("Content-Type", song.imageContentType || "image/png");
+    res.send(song.imageData);
+  } catch (error) {
+    console.error("Virtual image service error:", error);
+    res.status(500).send("Internal server error.");
+  }
+});
+
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

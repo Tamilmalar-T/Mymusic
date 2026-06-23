@@ -19,6 +19,22 @@ const songSchema = new mongoose.Schema(
 
     imageUrl: {
       type: String
+    },
+
+    audioData: {
+      type: Buffer
+    },
+
+    audioContentType: {
+      type: String
+    },
+
+    imageData: {
+      type: Buffer
+    },
+
+    imageContentType: {
+      type: String
     }
   },
   {

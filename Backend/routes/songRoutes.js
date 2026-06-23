@@ -1,45 +1,17 @@
 const express = require("express");
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
 
 const Song = require("../models/Song");
 
 const router = express.Router();
 
-// Ensure upload directories exist
-const songDir = path.join(__dirname, "../uploads/songs");
-const imageDir = path.join(__dirname, "../uploads/images");
-
-if (!fs.existsSync(songDir)) {
-  fs.mkdirSync(songDir, { recursive: true });
-}
-if (!fs.existsSync(imageDir)) {
-  fs.mkdirSync(imageDir, { recursive: true });
-}
-
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    if (file.fieldname === "image") {
-      cb(null, "uploads/images");
-    } else {
-      cb(null, "uploads/songs");
-    }
-  },
-
-  filename(req, file, cb) {
-    cb(
-      null,
-      Date.now() +
-        "-" +
-        file.originalname.replace(/\s+/g, "_")
-    );
-  }
-});
-
+// Multer in-memory storage configuration
+const storage = multer.memoryStorage();
 const upload = multer({
-  storage
+  storage,
+  limits: {
+    fileSize: 15 * 1024 * 1024 // 15MB limit
+  }
 });
 
 // Accepts both audio file and cover image file
@@ -58,10 +30,19 @@ router.post(
         return res.status(400).json({ message: "Audio file is required." });
       }
 
-      // Assign default stock cover image if none is uploaded
+      // Generate virtual filenames
+      const songFilename = Date.now() + "-" + songFile.originalname.replace(/\s+/g, "_");
+      const fileUrl = "/uploads/songs/" + songFilename;
+
       let imageUrl = "";
+      let imageData = null;
+      let imageContentType = "";
+
       if (imageFile) {
-        imageUrl = "/uploads/images/" + imageFile.filename;
+        const imageFilename = Date.now() + "-" + imageFile.originalname.replace(/\s+/g, "_");
+        imageUrl = "/uploads/images/" + imageFilename;
+        imageData = imageFile.buffer;
+        imageContentType = imageFile.mimetype;
       } else {
         const defaultImages = ["/images/pop.png", "/images/movie.png", "/images/acoustic.png"];
         imageUrl = defaultImages[Math.floor(Math.random() * defaultImages.length)];
@@ -70,24 +51,34 @@ router.post(
       const song = await Song.create({
         title: req.body.title,
         artist: req.body.artist,
-        fileUrl: "/uploads/songs/" + songFile.filename,
-        imageUrl: imageUrl
+        fileUrl,
+        imageUrl,
+        audioData: songFile.buffer,
+        audioContentType: songFile.mimetype,
+        imageData,
+        imageContentType
       });
 
-      res.json(song);
+      // Exclude binary buffers from the JSON response
+      const responseSong = song.toObject();
+      delete responseSong.audioData;
+      delete responseSong.imageData;
+
+      res.json(responseSong);
     } catch (error) {
       console.error("Backend upload error:", error);
-      res.status(500).json(error);
+      res.status(500).json({ message: error.message || "Internal Server Error" });
     }
   }
 );
 
 router.get("/", async (req, res) => {
   try {
-    const songs = await Song.find();
+    // Select all fields except the large binary data
+    const songs = await Song.find().select("-audioData -imageData");
     res.json(songs);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: error.message || "Internal Server Error" });
   }
 });
 
