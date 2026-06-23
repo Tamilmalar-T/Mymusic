@@ -332,7 +332,7 @@ function Home() {
       </div>
 
       {/* Floating player and modals */}
-      <MusicPlayer song={currentSong} />
+      <MusicPlayer song={currentSong} songs={filteredSongs} setCurrentSong={setCurrentSong} />
       
       {/* Bottom Nav for mobile views */}
       <div className="d-lg-none">
