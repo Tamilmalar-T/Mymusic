@@ -51,3 +51,5 @@ app.listen(process.env.PORT, () => {
     `Server Running ${process.env.PORT}`
   );
 });
+
+module.exports = app;
