@@ -1,32 +1,21 @@
 require("dotenv").config();
 
-const dns = require("dns");
-dns.setServers(["1.1.1.1", "1.0.0.1"]);
-
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
+const { initDb } = require("./db");
 
-const authRoutes =
-  require("./routes/authRoutes");
-
-const songRoutes =
-  require("./routes/songRoutes");
+const authRoutes = require("./routes/authRoutes");
+const songRoutes = require("./routes/songRoutes");
+const Song = require("./models/Song");
 
 const app = express();
 
 app.use(cors());
-
 app.use(express.json());
 
-app.use(
-  "/uploads",
-  express.static("uploads")
-);
+app.use("/uploads", express.static("uploads"));
 
-// Fallback virtual file serving from MongoDB for Vercel/serverless environments
-const Song = require("./models/Song");
-
+// Virtual file serving from PostgreSQL for audio and cover images
 app.get("/uploads/songs/:filename", async (req, res) => {
   try {
     const song = await Song.findOne({ fileUrl: "/uploads/songs/" + req.params.filename });
@@ -55,21 +44,11 @@ app.get("/uploads/images/:filename", async (req, res) => {
   }
 });
 
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log(
-      "MongoDB Connected"
-    );
-  });
-
 app.get("/", (req, res) => {
-  res.json({ message: "MyMusic Backend API is running successfully!" });
+  res.json({ message: "MyMusic Backend API (PostgreSQL) is running successfully!" });
 });
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/songs", songRoutes);
 
 // Global Error Handler
@@ -82,10 +61,24 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(
-    `Server Running ${process.env.PORT}`
-  );
-});
+const PORT = process.env.PORT || 5000;
 
-module.exports = app;
+initDb()
+  .then(() => {
+    console.log("PostgreSQL Connected & Tables Initialized");
+    if (require.main === module) {
+      app.listen(PORT, () => {
+        console.log(`Server Running on port ${PORT}`);
+      });
+    }
+  })
+  .catch((err) => {
+    console.error("PostgreSQL connection failed:", err.message);
+    if (require.main === module) {
+      app.listen(PORT, () => {
+        console.log(`Server Running on port ${PORT} (Warning: DB Connection Failed)`);
+      });
+    }
+  });
+
+module.exports = app;

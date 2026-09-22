@@ -60,7 +60,7 @@ router.post(
       });
 
       // Exclude binary buffers from the JSON response
-      const responseSong = song.toObject();
+      const responseSong = { ...song };
       delete responseSong.audioData;
       delete responseSong.imageData;
 
@@ -74,8 +74,7 @@ router.post(
 
 router.get("/", async (req, res) => {
   try {
-    // Select all fields except the large binary data
-    const songs = await Song.find().select("-audioData -imageData");
+    const songs = await Song.findWithoutBuffers();
     res.json(songs);
   } catch (error) {
     res.status(500).json({ message: error.message || "Internal Server Error" });

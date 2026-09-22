@@ -322,7 +322,9 @@ function MusicPlayer({ song, songs = [], setCurrentSong }) {
       return;
     }
 
-    const currentIndex = songs.findIndex(s => s._id === song._id);
+    const getSongId = (s) => (s ? (s.id !== undefined ? s.id : s._id) : null);
+    const targetId = getSongId(song);
+    const currentIndex = songs.findIndex(s => getSongId(s) === targetId);
     if (currentIndex === -1) return;
     let nextIndex = currentIndex + 1;
     if (nextIndex >= songs.length) {
@@ -334,7 +336,9 @@ function MusicPlayer({ song, songs = [], setCurrentSong }) {
   const playPrevSong = () => {
     if (!songs || songs.length === 0 || !setCurrentSong) return;
 
-    const currentIndex = songs.findIndex(s => s._id === song._id);
+    const getSongId = (s) => (s ? (s.id !== undefined ? s.id : s._id) : null);
+    const targetId = getSongId(song);
+    const currentIndex = songs.findIndex(s => getSongId(s) === targetId);
     if (currentIndex === -1) return;
     let prevIndex = currentIndex - 1;
     if (prevIndex < 0) {

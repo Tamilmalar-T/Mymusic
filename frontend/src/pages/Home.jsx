@@ -282,7 +282,7 @@ function Home() {
               }}
             >
               {filteredSongs.slice(0, 6).map((song) => (
-                <div key={song._id} onClick={() => setCurrentSong(song)}>
+                <div key={song.id || song._id} onClick={() => setCurrentSong(song)}>
                   <RecentCard image={song.imageUrl} title={song.title} />
                 </div>
               ))}
@@ -302,7 +302,7 @@ function Home() {
               className="hide-scrollbar"
             >
               {filteredSongs.map((song) => (
-                <div key={song._id} onClick={() => setCurrentSong(song)}>
+                <div key={song.id || song._id} onClick={() => setCurrentSong(song)}>
                   <AlbumCard image={song.imageUrl} title={song.title} subtitle={song.artist} />
                 </div>
               ))}
@@ -322,7 +322,7 @@ function Home() {
               className="hide-scrollbar"
             >
               {[...filteredSongs].reverse().map((song) => (
-                <div key={song._id} onClick={() => setCurrentSong(song)}>
+                <div key={song.id || song._id} onClick={() => setCurrentSong(song)}>
                   <AlbumCard image={song.imageUrl} title={song.title} subtitle={song.artist} />
                 </div>
               ))}
