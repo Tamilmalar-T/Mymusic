@@ -63,21 +63,32 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+function startServer(port) {
+  const server = app.listen(port, () => {
+    console.log(`Server Running on port ${port}`);
+  });
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.error(`\n⚠️  PORT ${port} IS ALREADY IN USE by another program.`);
+      console.error(`If you have another backend running, stop it or change PORT in .env (e.g. PORT=5001).\n`);
+    } else {
+      console.error("Server listen error:", err);
+    }
+  });
+}
+
 initDb()
   .then(() => {
     console.log("PostgreSQL Connected & Tables Initialized");
     if (require.main === module) {
-      app.listen(PORT, () => {
-        console.log(`Server Running on port ${PORT}`);
-      });
+      startServer(PORT);
     }
   })
   .catch((err) => {
     console.error("PostgreSQL connection failed:", err.message);
     if (require.main === module) {
-      app.listen(PORT, () => {
-        console.log(`Server Running on port ${PORT} (Warning: DB Connection Failed)`);
-      });
+      startServer(PORT);
     }
   });
 
